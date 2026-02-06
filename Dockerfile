@@ -12,8 +12,10 @@ RUN playwright install chromium --with-deps
 
 COPY . .
 
-# Port exposé (Railway injecte PORT)
-ENV PORT=8080
-EXPOSE $PORT
+# Pour voir les logs immédiatement (sinon buffer et on ne voit rien au démarrage)
+ENV PYTHONUNBUFFERED=1
 
-CMD python src/scheduler/cron_jobs.py & python src/api/server.py
+EXPOSE 8080
+
+# Scheduler en arrière-plan, API au premier plan (PID 1) pour que ses logs s'affichent
+CMD ["sh", "-c", "python src/scheduler/cron_jobs.py & exec python src/api/server.py"]
