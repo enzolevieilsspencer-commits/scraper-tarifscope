@@ -11,11 +11,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN playwright install chromium --with-deps
 
 COPY . .
+RUN chmod +x start.sh
 
-# Pour voir les logs immédiatement (sinon buffer et on ne voit rien au démarrage)
+# Pour voir les logs immédiatement
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8080
 
-# Scheduler en arrière-plan, API au premier plan (PID 1) pour que ses logs s'affichent
-CMD ["sh", "-c", "python src/scheduler/cron_jobs.py & exec python src/api/server.py"]
+# Script de démarrage qui affiche des infos (PORT, vars) avant de lancer l'app
+CMD ["./start.sh"]
