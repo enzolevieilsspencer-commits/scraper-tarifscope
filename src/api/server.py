@@ -176,11 +176,12 @@ async def extract(request: ExtractRequest):
                 status_code=500,
                 detail="Échec du scraping - Impossible de récupérer les données"
             )
+        # Toujours renvoyer des types attendus par Next (pas de null pour les string)
         return {
-            "name": data.get("name"),
-            "location": data.get("location"),
-            "stars": data.get("stars"),
-            "photoUrl": data.get("photoUrl"),
+            "name": data.get("name") or "",
+            "location": data.get("location") or "",
+            "stars": data.get("stars") if data.get("stars") is not None else 0,
+            "photoUrl": data.get("photoUrl") or "",
         }
     except HTTPException:
         raise
