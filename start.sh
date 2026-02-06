@@ -1,11 +1,11 @@
 #!/bin/sh
 set -e
-# Affichage immédiat dans les logs Railway
-echo "[start] Démarrage du conteneur..."
+echo "[start] Démarrage..."
 echo "[start] PORT=${PORT:-non défini}"
 echo "[start] SUPABASE_URL: $(test -n "$SUPABASE_URL" && echo 'défini' || echo 'MANQUANT')"
 echo "[start] SUPABASE_SERVICE_KEY: $(test -n "$SUPABASE_SERVICE_KEY" && echo 'défini' || echo 'MANQUANT')"
-echo "[start] Lancement API + Scheduler..."
-# Scheduler en arrière-plan, API au premier plan (stderr vers stdout pour voir les erreurs Python)
+# Lancer l'API en premier plan pour voir ses logs / crash ; scheduler en arrière-plan
+echo "[start] Lancement Scheduler (background)..."
 python src/scheduler/cron_jobs.py &
-exec python src/api/server.py 2>&1
+echo "[start] Lancement API (foreground)..."
+exec python -u src/api/server.py 2>&1

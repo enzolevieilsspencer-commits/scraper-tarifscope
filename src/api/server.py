@@ -10,7 +10,6 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from scrapers.hotel_info_scraper import scrape_hotel_info
 from database.supabase_client import supabase_client
 from config import API_HOST, API_PORT
 
@@ -86,7 +85,8 @@ async def scrape_hotel(request: ScrapeHotelRequest):
                 error="Hotel already exists"
             )
         
-        # Scraper les infos
+        # Import paresseux pour ne pas charger Playwright au démarrage du serveur
+        from scrapers.hotel_info_scraper import scrape_hotel_info
         hotel_data = scrape_hotel_info(request.url)
         
         if not hotel_data:
@@ -131,8 +131,8 @@ async def test_scrape(request: ScrapeHotelRequest):
     Utile pour vérifier qu'une URL fonctionne
     """
     try:
+        from scrapers.hotel_info_scraper import scrape_hotel_info
         print(f"\n🧪 Test de scraping: {request.url}")
-        
         hotel_data = scrape_hotel_info(request.url)
         
         if not hotel_data:
@@ -171,6 +171,7 @@ def extract(request: ExtractRequest):
     évitant "Playwright Sync API inside asyncio loop".
     """
     try:
+        from scrapers.hotel_info_scraper import scrape_hotel_info
         print(f"\n🔍 Extract (Next.js): {request.url}")
         data = scrape_hotel_info(request.url)
         if not data:
