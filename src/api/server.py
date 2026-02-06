@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
 from typing import Optional
+import asyncio
 import sys
 import os
 
@@ -170,7 +171,8 @@ async def extract(request: ExtractRequest):
     """
     try:
         print(f"\n🔍 Extract (Next.js): {request.url}")
-        data = scrape_hotel_info(request.url)
+        # Playwright sync API ne doit pas tourner dans la boucle asyncio → exécuter en thread
+        data = await asyncio.to_thread(scrape_hotel_info, request.url)
         if not data:
             raise HTTPException(
                 status_code=500,
