@@ -5,7 +5,7 @@
     "buildCommand": "pip install -r requirements.txt && playwright install chromium"
   },
   "deploy": {
-    "startCommand": "python src/scheduler/cron_jobs.py",
+    "startCommand": "python src/scheduler/cron_jobs.py & python src/api/server.py",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
