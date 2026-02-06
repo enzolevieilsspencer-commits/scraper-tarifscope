@@ -156,6 +156,42 @@ async def test_scrape(request: ScrapeHotelRequest):
         }
 
 
+class ExtractRequest(BaseModel):
+    """Body pour POST /extract (appelé par Next.js)"""
+    url: str
+
+
+@app.post("/extract")
+async def extract(request: ExtractRequest):
+    """
+    Endpoint pour Next.js « Ajouter un concurrent ».
+    Body: { "url": "https://www.booking.com/hotel/..." }
+    Réponse: { name, location, stars, photoUrl } (pas d'écriture en base).
+    """
+    try:
+        print(f"\n🔍 Extract (Next.js): {request.url}")
+        data = scrape_hotel_info(request.url)
+        if not data:
+            raise HTTPException(
+                status_code=500,
+                detail="Échec du scraping - Impossible de récupérer les données"
+            )
+        return {
+            "name": data.get("name"),
+            "location": data.get("location"),
+            "stars": data.get("stars"),
+            "photoUrl": data.get("photoUrl"),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Erreur /extract: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur serveur: {str(e)}"
+        )
+
+
 if __name__ == "__main__":
     import uvicorn
     
@@ -168,6 +204,7 @@ if __name__ == "__main__":
     📌 Endpoints disponibles:
        GET  /               - Info API
        GET  /health         - Health check
+       POST /extract        - Extraire infos (Next.js, sans enregistrer)
        POST /scrape-hotel   - Scraper et enregistrer un hôtel
        POST /test-scrape    - Tester le scraping sans enregistrer
     

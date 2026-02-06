@@ -15,9 +15,9 @@ SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 IS_PRODUCTION = ENVIRONMENT == "production"
 
-# API Configuration
+# API Configuration (Railway injecte PORT, sinon API_PORT ou 8000)
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
-API_PORT = int(os.getenv("API_PORT", "8000"))
+API_PORT = int(os.getenv("PORT") or os.getenv("API_PORT", "8000"))
 
 # Scraping Configuration
 MIN_DELAY_SECONDS = int(os.getenv("MIN_DELAY_SECONDS", "30"))
