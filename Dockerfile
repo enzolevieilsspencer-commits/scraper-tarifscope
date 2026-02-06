@@ -18,5 +18,5 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8080
 
-# Script de démarrage qui affiche des infos (PORT, vars) avant de lancer l'app
-CMD ["./start.sh"]
+# Temporaire: lancer UNIQUEMENT l'API pour voir si elle démarre (et voir l'erreur si crash)
+CMD ["python", "-u", "src/api/server.py"]
